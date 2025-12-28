@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA UO - GENERATORE GOLD</title>
+    <style>
+        :root { --primary: #00d2ff; --bg: #1a1a2e; --card: #16213e; --accent: #00ff41; --danger: #e94560; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e0e0e0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        .box { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #0f3460; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: var(--primary); font-size: 1.2rem; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #0f3460; padding-bottom: 10px; }
+        textarea { width: 100%; height: 400px; background: #0f172a; color: var(--accent); border: 1px solid #1e293b; border-radius: 10px; padding: 15px; font-family: 'Fira Code', monospace; resize: none; box-sizing: border-box; }
+        .controls { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        button { padding: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
+        .btn-start { background: var(--primary); color: #1a1a2e; }
+        .btn-copy { background: var(--accent); color: #1a1a2e; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .match-row { background: #1b264f; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--primary); animation: slideIn 0.3s ease-out; }
+        .prob-circle { background: #0f172a; border: 2px solid var(--accent); color: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
+        .badge { font-size: 0.7rem; background: var(--danger); padding: 3px 7px; border-radius: 4px; margin-left: 5px; color: white; }
+        .simultaneita-box { background: var(--accent); color: #1a1a2e; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; font-weight: bold; font-size: 1.3rem; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align:center; color:var(--primary); margin-bottom: 30px;">Protocollo UO - Generatore Schedina Gold</h1>
+
+    <div class="container">
+        <div class="box">
+            <h2>1. Palinsesto Giornaliero</h2>
+            <textarea id="inputList" placeholder="Incolla qui tutti i match della giornata..."></textarea>
+            <div class="controls">
+                <button class="btn-start" onclick="generaSchedinaGold()">Avvia Analisi Protocollo RE</button>
+            </div>
+        </div>
+
+        <div class="box">
+            <h2>2. Schedina Gold (Top 5 Probabilità)</h2>
+            <div id="results">
+                <p style="text-align:center; color:#555; margin-top: 100px;">Incolla i match e clicca su AVVIA per generare la Top 5 del giorno.</p>
+            </div>
+            <div id="simultaneita" style="display:none;" class="simultaneita-box"></div>
+            <button id="copyBtn" class="btn-copy" style="display:none; width:100%; margin-top:10px;" onclick="copiaSchedina()">Copia Schedina negli Appunti</button>
+        </div>
+    </div>
+
+<script>
+    let config = {};
+
+    // Carica il database esterno all'avvio
+    async function caricaDatabase() {
+        try {
+            const response = await fetch('database.json');
+            config = await response.json();
+            console.log("Database caricato con successo");
+        } catch (error) {
+            alert("Errore nel caricamento del database. Assicurati che database.json sia nella stessa cartella.");
+        }
+    }
+
+    // Esegui il caricamento
+    caricaDatabase();
+
+    function generaSchedinaGold() {
+        const input = document.getElementById('inputList').value;
+        const resultsDiv = document.getElementById('results');
+        const simultaneitaDiv = document.getElementById('simultaneita');
+
+        if (!config.databaseUO) {
+            alert("Database non pronto. Riprova tra un secondo.");
+            return;
+        }
+
+        const righe = input.split('\n');
+        let matchAnalizzati = [];
+
+        righe.forEach(riga => {
+            const cleanRow = riga.trim();
+            if (cleanRow.length < 5) return;
+
+            let matchObj = { testo: cleanRow, target: "U3.5", prob: 0.65, note: "Standard" };
+
+            // Controllo Squadre ELITE dal JSON
+            let foundElite = false;
+            for (const [squadra, dati] of Object.entries(config.databaseUO)) {
+                if (cleanRow.toLowerCase().includes(squadra.toLowerCase())) {
+                    Object.assign(matchObj, dati);
+                    foundElite = true;
+                    break;
+                }
+            }
+
+            // Controllo Leghe dal JSON
+            if (!foundElite) {
+                for (const [lega, dati] of Object.entries(config.leagueFilters)) {
+                    if (cleanRow.toLowerCase().includes(lega.toLowerCase())) {
+                        matchObj.prob = dati.prob;
+                        matchObj.target = dati.target;
+                        matchObj.note = "League Filter";
+                        break;
+                    }
+                }
+            }
+            matchAnalizzati.push(matchObj);
+        });
+
+        matchAnalizzati.sort((a, b) => b.prob - a.prob);
+        const top5 = matchAnalizzati.slice(0, 5);
+
+        let simultTotale = 1.0;
+        resultsDiv.innerHTML = top5.map(m => {
+            simultTotale *= m.prob;
+            return `<div class="match-row">
+                        <div><strong>${m.testo}</strong> <span class="badge">${m.note}</span><br><small>Target: ${m.target}</small></div>
+                        <div class="prob-circle">${(m.prob * 100).toFixed(0)}%</div>
+                    </div>`;
+        }).join('');
+
+        simultaneitaDiv.style.display = "block";
+        simultaneitaDiv.innerHTML = `SIMULTANEITÀ GOLD: ${(simultTotale * 100).toFixed(2)}%`;
+        document.getElementById('copyBtn').style.display = "block";
+    }
+
+</script>
+
+</body>
+</html>

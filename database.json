@@ -1,0 +1,18 @@
+{
+  "databaseUO": {
+    "Roma": { "prob": 0.89, "note": "X/1 Asset", "target": "U3.5" },
+    "Egitto": { "prob": 0.85, "note": "Elite AFCON", "target": "U2.5" },
+    "Marocco": { "prob": 0.82, "note": "X/2 Asset", "target": "U2.5" },
+    "Inter Moengotapoe": { "prob": 0.81, "note": "H2H Strict", "target": "U3.5" },
+    "Melbourne Victory": { "prob": 0.82, "note": "Motore Mattutino", "target": "O2.5" },
+    "Al-Taawon": { "prob": 0.83, "note": "Stabilità Saudi", "target": "U3.5" },
+    "Juventus": { "prob": 0.87, "note": "X/2 King", "target": "U3.5" }
+  },
+  "leagueFilters": {
+    "serie a": { "target": "U3.5", "prob": 0.80 },
+    "african nations cup": { "target": "U2.5", "prob": 0.78 },
+    "a-league": { "target": "O2.5", "prob": 0.75 },
+    "liga portugal": { "target": "U3.5", "prob": 0.72 },
+    "championship": { "target": "U3.5", "prob": 0.70 }
+  }
+}

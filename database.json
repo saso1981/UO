@@ -1,18 +1,24 @@
 {
   "databaseUO": {
-    "Roma": { "prob": 0.89, "note": "X/1 Asset", "target": "U3.5" },
-    "Egitto": { "prob": 0.85, "note": "Elite AFCON", "target": "U2.5" },
-    "Marocco": { "prob": 0.82, "note": "X/2 Asset", "target": "U2.5" },
-    "Inter Moengotapoe": { "prob": 0.81, "note": "H2H Strict", "target": "U3.5" },
-    "Melbourne Victory": { "prob": 0.82, "note": "Motore Mattutino", "target": "O2.5" },
-    "Al-Taawon": { "prob": 0.83, "note": "Stabilità Saudi", "target": "U3.5" },
-    "Juventus": { "prob": 0.87, "note": "X/2 King", "target": "U3.5" }
+    "Roma": { "prob": 0.91, "note": "X/1 Asset (72% Pareggio HT) - Trend 2025 consolidato", "target": "U3.5" },
+    "Genoa": { "prob": 0.88, "note": "Asset Difensivo - Bassi xG concessi nel 2025", "target": "U3.5" },
+    "Egitto": { "prob": 0.87, "note": "Elite AFCON - 90% U2.5 negli ultimi 3 mesi", "target": "U2.5" },
+    "Marocco": { "prob": 0.85, "note": "X/2 Asset (Vittoria 2T) - Gestione ritmo 2025", "target": "U2.5" },
+    "Melbourne Victory": { "prob": 0.83, "note": "Motore Over - Alta produzione offensiva 2025", "target": "O2.5" },
+    "Inter Moengotapoe": { "prob": 0.82, "note": "Strict Filter: Contrazione gol negli scontri diretti", "target": "U3.5" },
+    "Al-Taawon": { "prob": 0.84, "note": "Saudi Pro: X/1 Asset (65% Pareggio HT)", "target": "U3.5" },
+    "Atalanta": { "prob": 0.88, "note": "Asset Consolidato - Sicurezza Under 3.5", "target": "U3.5" },
+    "Algeria": { "prob": 0.87, "note": "Trend 2025: Clean Sheet specialist", "target": "U2.5" },
+    "Wellington Phoenix": { "prob": 0.81, "note": "Asset Motore Over - A-League Trend", "target": "O2.5" },
+    "Lazio": { "prob": 0.89, "note": "X/1 Asset - Tenuta difensiva 1T", "target": "U3.5" }
   },
   "leagueFilters": {
-    "serie a": { "target": "U3.5", "prob": 0.80 },
-    "african nations cup": { "target": "U2.5", "prob": 0.78 },
-    "a-league": { "target": "O2.5", "prob": 0.75 },
-    "liga portugal": { "target": "U3.5", "prob": 0.72 },
-    "championship": { "target": "U3.5", "prob": 0.70 }
+    "serie a": { "target": "U3.5", "prob": 0.84, "note": "Trend 2025: Tatticismo elevato" },
+    "african nations cup": { "target": "U2.5", "prob": 0.82, "note": "Strict AFCON: Media 1.4 gol/match" },
+    "a-league": { "target": "O2.5", "prob": 0.78, "note": "Motore Over Oceanico" },
+    "championship": { "target": "U3.5", "prob": 0.75, "note": "Equilibrio fisico 2025" },
+    "saudi professional league": { "target": "U3.5", "prob": 0.81, "note": "Crescita organizzazione difensiva" },
+    "national league": { "target": "U3.5", "prob": 0.68, "note": "Varianza medio-alta" },
+    "ligue 1": { "target": "U2.5", "prob": 0.74, "note": "Trend Under mercati africani/francesi" }
   }
 }

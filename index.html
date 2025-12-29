@@ -4,96 +4,108 @@
     <meta charset="UTF-8">
     <title>Analizzatore Gold Pro - Global 2025</title>
     <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #2d2d2d; }
-        th, td { padding: 12px; border: 1px solid #444; text-align: left; }
-        th { background: #d4a017; color: #000; }
-        .future { background: #2ecc71; padding: 5px 10px; border-radius: 4px; font-weight: bold; color: white; }
-        #orario-attuale { font-weight: bold; color: #d4a017; margin-bottom: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f10; color: #e0e0e0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        textarea { width: 100%; height: 180px; background: #1c1c1e; color: #00ff41; border: 1px solid #d4a017; padding: 10px; font-family: monospace; border-radius: 8px; }
+        button { width: 100%; padding: 15px; margin-top: 10px; background: #d4a017; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; background: #1c1c1e; border-radius: 8px; overflow: hidden; }
+        th { background: #d4a017; color: #000; padding: 12px; text-transform: uppercase; font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid #2c2c2e; text-align: left; }
+        .gold { color: #d4a017; font-weight: bold; }
+        .prob-badge { background: #28a745; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        #orario-sistema { color: #d4a017; font-size: 14px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>🏆 Analizzatore Gold (Global 2025 - All Leagues)</h2>
-    <div id="orario-attuale"></div>
+<div class="container">
+    <h2>🏆 Analizzatore Gold Global 2025</h2>
+    <div id="orario-sistema"></div>
     
-    <textarea id="palinsesto" placeholder="Incolla qui il palinsesto..." style="width:100%; height:150px; background:#333; color:#fff; border: 1px solid #d4a017;"></textarea>
-    <br><br>
-    <button onclick="processaGold()" style="padding:15px 30px; cursor:pointer; background:#d4a017; border:none; font-weight:bold; color:#000; border-radius:5px;">GENERA SCHEDINA GOLD</button>
+    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto completo..."></textarea>
+    <button onclick="analizzaGold()">GENERA SCHEDINA GOLD</button>
 
-    <div id="risultati">
-        <table>
-            <thead>
-                <tr>
-                    <th>Ora</th>
-                    <th>Match</th>
-                    <th>Target</th>
-                    <th>Probabilità</th>
-                    <th>Stato</th>
-                </tr>
-            </thead>
-            <tbody id="match-body"></tbody>
-        </table>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Ora</th>
+                <th>Match</th>
+                <th>Target</th>
+                <th>Probabilità</th>
+            </tr>
+        </thead>
+        <tbody id="risultatiCorpo"></tbody>
+    </table>
+</div>
 
-    <script>
-        // DATABASE GLOBALE 2025 INTEGRATO
-        const globalDB = {
-            "Roma": { "prob": 0.93, "target": "U3.5" },
-            "Egitto": { "prob": 0.90, "target": "U2.5" },
-            "Marocco": { "prob": 0.89, "target": "U2.5" },
-            "Oran": { "prob": 0.88, "target": "U2.5" },
-            "MC Alger": { "prob": 0.88, "target": "U2.5" },
-            "Melbourne Victory": { "prob": 0.87, "target": "O2.5" },
-            "Al-Taawon": { "prob": 0.86, "target": "U3.5" }
-        };
+<script>
+    // Database Integrato con i pesi 2025 degli screenshot
+    const db2025 = {
+        "Roma": { p: 0.93, t: "U3.5" },
+        "Genoa": { p: 0.89, t: "U3.5" },
+        "Angola": { p: 0.87, t: "U2.5" },
+        "Egitto": { p: 0.90, t: "U2.5" },
+        "Zambia": { p: 0.85, t: "U2.5" },
+        "Marocco": { p: 0.89, t: "U2.5" },
+        "Oran": { p: 0.88, t: "U2.5" },
+        "MC Alger": { p: 0.88, t: "U2.5" },
+        "Melbourne Victory": { p: 0.87, t: "O2.5" },
+        "Al-Taawon": { p: 0.86, t: "U3.5" }
+    };
 
-        function processaGold() {
-            const rawData = document.getElementById('palinsesto').value;
-            const adesso = new Date();
-            const body = document.getElementById('match-body');
-            body.innerHTML = '';
+    function analizzaGold() {
+        const testo = document.getElementById('inputPalinsesto').value;
+        const oraAttuale = new Date();
+        const corpo = document.getElementById('risultatiCorpo');
+        corpo.innerHTML = '';
 
-            // LOGICA DI ESTRAZIONE CORRETTA
-            const linee = rawData.split('\n');
-            let matches = [];
+        const righe = testo.split('\n');
+        let matchTrovati = [];
 
-            linee.forEach(linea => {
-                // Regex per estrarre Ora e Squadre (es: "29.12 20:45" o "20:45")
-                const oraMatch = linea.match(/(\d{2}:\d{2})/);
-                if (oraMatch) {
-                    const ora = oraMatch[1];
-                    // Pulisce il nome della squadra togliendo date e orari
-                    const squadra = linea.split(':')[1] ? linea.split(':')[0].split(',')[0].replace(/\d{2}\.\d{2}/, '').trim() : linea.split(',')[0].trim();
-                    matches.push({ ora, squadra: squadra.split(' vs ')[0].split(' - ')[0].trim() });
-                }
-            });
-
-            // FILTRO TEMPORALE + PROBABILITÀ
-            const validi = matches.filter(m => {
-                const [h, min] = m.ora.split(':');
-                const d = new Date();
-                d.setHours(parseInt(h), parseInt(min), 0);
-                return d > new Date(adesso.getTime() + 5 * 60000); // +5 min
-            }).sort((a, b) => (globalDB[b.squadra]?.prob || 0.70) - (globalDB[a.squadra]?.prob || 0.70));
-
-            validi.forEach(m => {
-                // Cerca nel DB o applica filtro base 2025
-                const info = Object.keys(globalDB).find(k => m.squadra.includes(k)) ? globalDB[Object.keys(globalDB).find(k => m.squadra.includes(k))] : { prob: 0.75, target: "U3.5" };
+        righe.forEach(riga => {
+            // Regex migliorata: Cerca HH:MM e ignora prefissi come date o leghe
+            const orarioMatch = riga.match(/(\d{2}:\d{2})/);
+            if (orarioMatch) {
+                const ora = orarioMatch[1];
                 
-                body.innerHTML += `<tr>
-                    <td>${m.ora}</td>
-                    <td>${m.squadra}</td>
-                    <td>${info.target}</td>
-                    <td>${(info.prob * 100).toFixed(0)}%</td>
-                    <td><span class="future">DISPONIBILE</span></td>
-                </tr>`;
-            });
-        }
+                // Pulizia nome match: prende la parte dopo i due punti dell'orario o dopo la virgola
+                let infoMatch = riga.split(ora)[1] || riga;
+                infoMatch = infoMatch.replace(/[,.-]/g, ' ').replace(/\d{2}\/\d{2}/g, '').trim();
+                
+                if (infoMatch.length > 3) {
+                    matchTrovati.push({ ora, match: infoMatch });
+                }
+            }
+        });
 
-        setInterval(() => {
-            document.getElementById('orario-attuale').innerText = "Orario Sistema: " + new Date().toLocaleTimeString();
-        }, 1000);
-    </script>
+        // Scudo Temporale + Ordinamento Gold
+        const filtrati = matchTrovati.filter(m => {
+            const [h, min] = m.ora.split(':');
+            const d = new Date();
+            d.setHours(parseInt(h), parseInt(min), 0);
+            return d > new Date(oraAttuale.getTime() + 5 * 60000);
+        }).sort((a, b) => {
+            const pA = Object.keys(db2025).find(k => a.match.includes(k)) ? db2025[Object.keys(db2025).find(k => a.match.includes(k))].p : 0.75;
+            const pB = Object.keys(db2025).find(k => b.match.includes(k)) ? db2025[Object.keys(db2025).find(k => b.match.includes(k))].p : 0.75;
+            return pB - pA;
+        });
+
+        filtrati.forEach(m => {
+            let key = Object.keys(db2025).find(k => m.match.includes(k));
+            let data = key ? db2025[key] : { p: 0.75, t: "U3.5" };
+            
+            corpo.innerHTML += `<tr>
+                <td class="gold">${m.ora}</td>
+                <td>${m.match}</td>
+                <td>${data.t}</td>
+                <td><span class="prob-badge">${(data.p * 100).toFixed(0)}%</span></td>
+            </tr>`;
+        });
+    }
+
+    setInterval(() => {
+        document.getElementById('orario-sistema').innerText = "LIVE SYSTEM TIME: " + new Date().toLocaleTimeString();
+    }, 1000);
+</script>
 </body>
 </html>

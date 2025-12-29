@@ -5,15 +5,15 @@
     <title>Analizzatore Gold Pro - Global 2025</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f0f10; color: #e0e0e0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 950px; margin: auto; }
         textarea { width: 100%; height: 180px; background: #1c1c1e; color: #00ff41; border: 1px solid #d4a017; padding: 10px; font-family: monospace; border-radius: 8px; }
         button { width: 100%; padding: 15px; margin-top: 10px; background: #d4a017; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 16px; }
         table { width: 100%; border-collapse: collapse; margin-top: 25px; background: #1c1c1e; border-radius: 8px; overflow: hidden; }
-        th { background: #d4a017; color: #000; padding: 12px; text-transform: uppercase; font-size: 13px; }
-        td { padding: 12px; border-bottom: 1px solid #2c2c2e; text-align: left; }
+        th { background: #d4a017; color: #000; padding: 12px; text-transform: uppercase; font-size: 12px; }
+        td { padding: 12px; border-bottom: 1px solid #2c2c2e; text-align: left; font-size: 14px; }
         .gold { color: #d4a017; font-weight: bold; }
         .prob-badge { background: #28a745; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-        #orario-sistema { color: #d4a017; font-size: 14px; margin-bottom: 10px; }
+        #orario-sistema { color: #d4a017; font-size: 14px; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -22,14 +22,14 @@
     <h2>🏆 Analizzatore Gold Global 2025</h2>
     <div id="orario-sistema"></div>
     
-    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto completo..."></textarea>
+    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto (es. Premier League: Arsenal vs Villa 30.12 21:15)"></textarea>
     <button onclick="analizzaGold()">GENERA SCHEDINA GOLD</button>
 
     <table>
         <thead>
             <tr>
                 <th>Ora</th>
-                <th>Match</th>
+                <th>Match Reale</th>
                 <th>Target</th>
                 <th>Probabilità</th>
             </tr>
@@ -39,18 +39,15 @@
 </div>
 
 <script>
-    // Database Integrato con i pesi 2025 degli screenshot
     const db2025 = {
         "Roma": { p: 0.93, t: "U3.5" },
-        "Genoa": { p: 0.89, t: "U3.5" },
-        "Angola": { p: 0.87, t: "U2.5" },
+        "Inter": { p: 0.92, t: "U3.5" },
+        "Arsenal": { p: 0.88, t: "O1.5" },
         "Egitto": { p: 0.90, t: "U2.5" },
-        "Zambia": { p: 0.85, t: "U2.5" },
         "Marocco": { p: 0.89, t: "U2.5" },
-        "Oran": { p: 0.88, t: "U2.5" },
-        "MC Alger": { p: 0.88, t: "U2.5" },
         "Melbourne Victory": { p: 0.87, t: "O2.5" },
-        "Al-Taawon": { p: 0.86, t: "U3.5" }
+        "Al Nassr": { p: 0.86, t: "U3.5" },
+        "Al Ahli": { p: 0.84, t: "U3.5" }
     };
 
     function analizzaGold() {
@@ -63,34 +60,29 @@
         let matchTrovati = [];
 
         righe.forEach(riga => {
-            // Regex migliorata: Cerca HH:MM e ignora prefissi come date o leghe
             const orarioMatch = riga.match(/(\d{2}:\d{2})/);
             if (orarioMatch) {
                 const ora = orarioMatch[1];
                 
-                // Pulizia nome match: prende la parte dopo i due punti dell'orario o dopo la virgola
-                let infoMatch = riga.split(ora)[1] || riga;
-                infoMatch = infoMatch.replace(/[,.-]/g, ' ').replace(/\d{2}\/\d{2}/g, '').trim();
+                // PULIZIA AVANZATA: Rimuove prefissi (Lega:) e suffissi (Data)
+                let pulizia = riga.split(ora)[0].trim();
+                if (pulizia.includes(':')) pulizia = pulizia.split(':').slice(1).join(':').trim();
+                pulizia = pulizia.replace(/\d{2}\.\d{2}/g, '').replace(/Martedì|Mercoledì|Lunedì/g, '').trim();
                 
-                if (infoMatch.length > 3) {
-                    matchTrovati.push({ ora, match: infoMatch });
+                if (pulizia.length > 3) {
+                    matchTrovati.push({ ora, match: pulizia });
                 }
             }
         });
 
-        // Scudo Temporale + Ordinamento Gold
-        const filtrati = matchTrovati.filter(m => {
-            const [h, min] = m.ora.split(':');
-            const d = new Date();
-            d.setHours(parseInt(h), parseInt(min), 0);
-            return d > new Date(oraAttuale.getTime() + 5 * 60000);
-        }).sort((a, b) => {
+        // Ordinamento per Database 2025
+        matchTrovati.sort((a, b) => {
             const pA = Object.keys(db2025).find(k => a.match.includes(k)) ? db2025[Object.keys(db2025).find(k => a.match.includes(k))].p : 0.75;
             const pB = Object.keys(db2025).find(k => b.match.includes(k)) ? db2025[Object.keys(db2025).find(k => b.match.includes(k))].p : 0.75;
             return pB - pA;
         });
 
-        filtrati.forEach(m => {
+        matchTrovati.forEach(m => {
             let key = Object.keys(db2025).find(k => m.match.includes(k));
             let data = key ? db2025[key] : { p: 0.75, t: "U3.5" };
             

@@ -2,13 +2,14 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Analizzatore Gold Pro - Global Database 2025</title>
+    <title>Analizzatore Gold Pro - Global 2025</title>
     <style>
         body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #2d2d2d; }
         th, td { padding: 12px; border: 1px solid #444; text-align: left; }
         th { background: #d4a017; color: #000; }
-        .future { background: #2ecc71; padding: 5px 10px; border-radius: 4px; font-weight: bold; }
+        .future { background: #2ecc71; padding: 5px 10px; border-radius: 4px; font-weight: bold; color: white; }
+        #orario-attuale { font-weight: bold; color: #d4a017; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -16,12 +17,12 @@
     <h2>🏆 Analizzatore Gold (Global 2025 - All Leagues)</h2>
     <div id="orario-attuale"></div>
     
-    <textarea id="palinsesto" placeholder="Incolla qui il palinsesto HTML..." style="width:100%; height:150px; background:#333; color:#fff;"></textarea>
-    <br>
-    <button onclick="processaGold()" style="padding:15px 30px; cursor:pointer; background:#d4a017; border:none; font-weight:bold;">GENERA SCHEDINA GOLD</button>
+    <textarea id="palinsesto" placeholder="Incolla qui il palinsesto..." style="width:100%; height:150px; background:#333; color:#fff; border: 1px solid #d4a017;"></textarea>
+    <br><br>
+    <button onclick="processaGold()" style="padding:15px 30px; cursor:pointer; background:#d4a017; border:none; font-weight:bold; color:#000; border-radius:5px;">GENERA SCHEDINA GOLD</button>
 
     <div id="risultati">
-        <table id="tabella-match">
+        <table>
             <thead>
                 <tr>
                     <th>Ora</th>
@@ -36,19 +37,15 @@
     </div>
 
     <script>
-        // DATABASE GLOBALE 2025 - Tutti i campionati monitorati
+        // DATABASE GLOBALE 2025 INTEGRATO
         const globalDB = {
             "Roma": { "prob": 0.93, "target": "U3.5" },
             "Egitto": { "prob": 0.90, "target": "U2.5" },
             "Marocco": { "prob": 0.89, "target": "U2.5" },
+            "Oran": { "prob": 0.88, "target": "U2.5" },
+            "MC Alger": { "prob": 0.88, "target": "U2.5" },
             "Melbourne Victory": { "prob": 0.87, "target": "O2.5" },
-            "Flamengo": { "prob": 0.86, "target": "U3.5" },
-            "Urawa Reds": { "prob": 0.84, "target": "U3.5" },
-            // Filtri Lega Generici se la squadra non è in lista
-            "DEFAULT_SERIE_A": { "prob": 0.88, "target": "U3.5" },
-            "DEFAULT_AFCON": { "prob": 0.89, "target": "U2.5" },
-            "DEFAULT_ALGERIA": { "prob": 0.88, "target": "U2.5" },
-            "DEFAULT_BRAZIL": { "prob": 0.82, "target": "U3.5" }
+            "Al-Taawon": { "prob": 0.86, "target": "U3.5" }
         };
 
         function processaGold() {
@@ -57,22 +54,33 @@
             const body = document.getElementById('match-body');
             body.innerHTML = '';
 
-            // Estrazione match (logica semplificata per il tuo uso)
-            let matches = estraiMatch(rawData); 
+            // LOGICA DI ESTRAZIONE CORRETTA
+            const linee = rawData.split('\n');
+            let matches = [];
 
-            // SCUDO TEMPORALE + FILTRO GLOBALE
-            const matchFiltrati = matches.filter(m => {
-                const [ore, minuti] = m.ora.split(':');
-                const dataMatch = new Date();
-                dataMatch.setHours(parseInt(ore), parseInt(minuti), 0);
-                return dataMatch > new Date(adesso.getTime() + 5 * 60000);
+            linee.forEach(linea => {
+                // Regex per estrarre Ora e Squadre (es: "29.12 20:45" o "20:45")
+                const oraMatch = linea.match(/(\d{2}:\d{2})/);
+                if (oraMatch) {
+                    const ora = oraMatch[1];
+                    // Pulisce il nome della squadra togliendo date e orari
+                    const squadra = linea.split(':')[1] ? linea.split(':')[0].split(',')[0].replace(/\d{2}\.\d{2}/, '').trim() : linea.split(',')[0].trim();
+                    matches.push({ ora, squadra: squadra.split(' vs ')[0].split(' - ')[0].trim() });
+                }
             });
 
-            // Ordinamento per importanza globale
-            matchFiltrati.sort((a, b) => (globalDB[b.squadra]?.prob || 0.5) - (globalDB[a.squadra]?.prob || 0.5));
+            // FILTRO TEMPORALE + PROBABILITÀ
+            const validi = matches.filter(m => {
+                const [h, min] = m.ora.split(':');
+                const d = new Date();
+                d.setHours(parseInt(h), parseInt(min), 0);
+                return d > new Date(adesso.getTime() + 5 * 60000); // +5 min
+            }).sort((a, b) => (globalDB[b.squadra]?.prob || 0.70) - (globalDB[a.squadra]?.prob || 0.70));
 
-            matchFiltrati.forEach(m => {
-                const info = globalDB[m.squadra] || { prob: 0.75, target: "U3.5" };
+            validi.forEach(m => {
+                // Cerca nel DB o applica filtro base 2025
+                const info = Object.keys(globalDB).find(k => m.squadra.includes(k)) ? globalDB[Object.keys(globalDB).find(k => m.squadra.includes(k))] : { prob: 0.75, target: "U3.5" };
+                
                 body.innerHTML += `<tr>
                     <td>${m.ora}</td>
                     <td>${m.squadra}</td>
@@ -81,11 +89,6 @@
                     <td><span class="future">DISPONIBILE</span></td>
                 </tr>`;
             });
-        }
-
-        function estraiMatch(html) {
-            // Qui inserisci la tua regex specifica per il sito che usi
-            return []; 
         }
 
         setInterval(() => {

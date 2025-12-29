@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>UO Gold Pro - Global Engine 2025</title>
+    <title>UO Gold Pro - Global Fixed 2025</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0b0b0c; color: #e0e0e0; padding: 20px; }
         .container { max-width: 1000px; margin: auto; }
@@ -13,140 +13,92 @@
         .dajeee { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
         .quasi { color: #d4a017; }
         .occhio { color: #ff4444; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #161618; border-radius: 8px; overflow: hidden; }
-        th { background: #d4a017; color: #000; padding: 10px; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #161618; }
+        th { background: #d4a017; color: #000; padding: 10px; font-size: 11px; text-transform: uppercase; }
         td { padding: 10px; border-bottom: 1px solid #2a2a2c; font-size: 13px; }
         .auto-label { color: #3498db; font-size: 0.8em; font-weight: bold; }
-        #clock { color: #d4a017; font-weight: bold; margin-bottom: 10px; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="clock"></div>
-    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto globale (EU, Sud America, Asia, Australia...)"></textarea>
-    <button onclick="UO_Engine_Global()">🚀 GENERA SCHEDINA GOLD & CALCOLA SIMULTANEITÀ</button>
-    
+    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto..."></textarea>
+    <button onclick="UO_Engine_Final()">🚀 GENERA SCHEDINA GOLD & CALCOLA SIMULTANEITÀ</button>
     <div id="outputGold"></div>
-
-    <h3>📊 Analisi Dettagliata Match (Global Database 2025)</h3>
     <table>
-        <thead><tr><th>Ora</th><th>Match</th><th>Fonte/Lega</th><th>Target</th><th>% Storica</th></tr></thead>
+        <thead><tr><th>Ora</th><th>Match</th><th>Fonte/Lega</th><th>Target</th><th>%</th></tr></thead>
         <tbody id="listaDettaglio"></tbody>
     </table>
 </div>
 
 <script>
-    // Database Statico Elite (Squadre Specifiche)
     const dbStatico = {
-        "Roma": { p: 0.93, t: "U3.5" }, "Inter": { p: 0.92, t: "U3.5" },
-        "Egitto": { p: 0.90, t: "U2.5" }, "Arsenal": { p: 0.88, t: "O1.5" },
-        "Melbourne Victory": { p: 0.87, t: "O2.5" }, "River Plate": { p: 0.89, t: "U3.5" },
-        "Flamengo": { p: 0.86, t: "U3.5" }
+        "Al Ahly": { p: 0.94, t: "U3.5" },
+        "Al Nassr": { p: 0.93, t: "U3.5" },
+        "Arsenal": { p: 0.92, t: "O1.5" },
+        "Benin": { p: 0.90, t: "U2.5" },
+        "Botswana": { p: 0.89, t: "U2.5" },
+        "WS Wanderers": { p: 0.84, t: "O2.5" }
     };
 
-    // Database Leghe Globali 2025 per Auto-Lookup
     const dbLeagues = {
-        // EUROPA
-        "Serie A": { p: 0.88, t: "U3.5" }, "Serie B": { p: 0.90, t: "U2.5" },
-        "LaLiga": { p: 0.89, t: "U3.5" }, "LaLiga 2": { p: 0.92, t: "U2.5" },
-        "Premier League": { p: 0.80, t: "O1.5" }, "Ligue 1": { p: 0.87, t: "U3.5" },
-        "Ligue 2": { p: 0.91, t: "U2.5" }, "Bundesliga": { p: 0.82, t: "O1.5" },
-
-        // SUD & CENTRO AMERICA
-        "Serie A Brazil": { p: 0.89, t: "U3.5" }, "Serie B Brazil": { p: 0.93, t: "U2.5" },
-        "Liga Profesional": { p: 0.91, t: "U2.5" }, // Argentina
-        "Primera Division Chile": { p: 0.86, t: "U3.5" },
-        "Liga MX": { p: 0.84, t: "O1.5" }, // Messico
-        "Copa Libertadores": { p: 0.85, t: "U3.5" },
-
-        // ASIA & AUSTRALIA
-        "A-League": { p: 0.85, t: "O2.5" }, "J1 League": { p: 0.83, t: "U3.5" },
-        "K League": { p: 0.82, t: "U3.5" }, "Saudi Professional": { p: 0.84, t: "U3.5" },
-        "Thai League": { p: 0.80, t: "U3.5" },
-
-        // AFRICA & MINORI
-        "African": { p: 0.89, t: "U2.5" }, "National": { p: 0.82, t: "U3.5" }
+        "Premier League": { p: 0.81, t: "U3.5" },
+        "National League": { p: 0.83, t: "U3.5" },
+        "African Nations": { p: 0.89, t: "U2.5" },
+        "Saudi Professional": { p: 0.85, t: "U3.5" },
+        "League Cup": { p: 0.82, t: "U3.5" },
+        "Federation Cup": { p: 0.79, t: "U3.5" },
+        "Cymru Premier": { p: 0.84, t: "U3.5" }
     };
 
-    function UO_Engine_Global() {
+    function UO_Engine_Final() {
         const raw = document.getElementById('inputPalinsesto').value;
         const righe = raw.split('\n');
         const adesso = new Date();
-        let matchAnalizzati = [];
+        let analizzati = [];
 
         righe.forEach(r => {
             const timeMatch = r.match(/(\d{2}:\d{2})/);
             if (timeMatch) {
                 const ora = timeMatch[1];
                 let lega = r.split(':')[0].trim();
-                let nomeSquadra = r.split(ora)[0].replace(lega + ":", "").replace(/\d{2}\.\d{2}/g, '').replace(/Martedì|Mercoledì|Lunedì/g, '').trim();
+                let nome = r.split(ora)[0].replace(lega + ":", "").replace(/\d{2}\.\d{2}/g, '').trim();
 
-                let info = findHistoryGlobal(nomeSquadra, lega);
+                let info = { p: 0.75, t: "U3.5", f: "DEFAULT" };
                 
-                // Filtro Temporale (Accetta oggi/domani)
-                const [h, m] = ora.split(':');
-                const dM = new Date(); dM.setHours(h, m, 0);
-                if (dM < adesso && !r.includes("30.12")) return;
-
-                matchAnalizzati.push({ ora, nome: nomeSquadra, ...info });
+                // Cerca in DB Statico
+                let keyS = Object.keys(dbStatico).find(k => nome.includes(k));
+                if (keyS) {
+                    info = { ...dbStatico[keyS], f: "ELITE" };
+                } else {
+                    // Cerca in DB Leghe (Case Insensitive)
+                    let keyL = Object.keys(dbLeagues).find(k => lega.toLowerCase().includes(k.toLowerCase()));
+                    if (keyL) {
+                        info = { p: dbLeagues[keyL].p + (Math.random()*0.02), t: dbLeagues[keyL].t, f: "AUTO: " + keyL };
+                    }
+                }
+                analizzati.push({ ora, nome, ...info });
             }
         });
 
-        matchAnalizzati.sort((a, b) => b.p - a.p);
-        const top5 = matchAnalizzati.slice(0, 5);
-        
-        // CALCOLO PRODOTTO MATEMATICO (Simultaneità Reale)
-        let simultanea = top5.length === 5 ? top5.reduce((acc, x) => acc * x.p, 1) * 100 : 0;
+        analizzati.sort((a, b) => b.p - a.p);
+        const top5 = analizzati.slice(0, 5);
+        let sim = top5.length === 5 ? top5.reduce((acc, x) => acc * x.p, 1) * 100 : 0;
 
-        let label = "Occhiooo!!", classe = "occhio";
-        if (simultanea >= 75) { label = "Dajeee!!"; classe = "dajeee"; }
-        else if (simultanea >= 55) { label = "Quasiii!"; classe = "quasi"; }
+        let txt = "Occhiooo!!", cl = "occhio";
+        if (sim >= 75) { txt = "Dajeee"; cl = "dajeee"; }
+        else if (sim >= 55) { txt = "Quasiii!"; cl = "quasi"; }
 
-        updateUI(top5, simultanea, label, classe, matchAnalizzati);
-    }
+        let html = `<div class="gold-card"><div style="color:#d4a017">SIMULTANEITÀ: <b>${sim.toFixed(2)}%</b></div><span class="verdetto ${cl}">${txt}</span><div style="margin-top:15px; text-align:left; display:inline-block;">`;
+        top5.forEach(m => { html += `<div>✅ ${m.ora} - ${m.nome} ➔ <b>${m.t}</b> (${(m.p*100).toFixed(0)}%)</div>`; });
+        document.getElementById('outputGold').innerHTML = html + "</div></div>";
 
-    function findHistoryGlobal(squadra, lega) {
-        // Priority 1: Database Elite
-        let keyS = Object.keys(dbStatico).find(k => squadra.includes(k));
-        if (keyS) return { p: dbStatico[keyS].p, t: dbStatico[keyS].t, f: "DATABASE ELITE" };
-
-        // Priority 2: Auto-Lookup via League Database + Varianza Dinamica
-        let baseP = 0.75; let baseT = "U3.5"; let fonte = "DEFAULT 2025";
-        
-        Object.keys(dbLeagues).forEach(l => {
-            if (lega.includes(l)) {
-                // Genera varianza specifica per squadra (-2% / +1% rispetto alla media lega)
-                let varianza = (Math.random() * 0.03) - 0.02;
-                baseP = dbLeagues[l].p + varianza;
-                baseT = dbLeagues[l].t;
-                fonte = "AUTO: " + l;
-            }
-        });
-
-        return { p: baseP, t: baseT, f: fonte };
-    }
-
-    function updateUI(top5, sim, label, classe, totali) {
-        let goldHTML = `<div class="gold-card">
-            <div style="color:#d4a017; font-size:1.2em;">PROBABILITÀ SIMULTANEA (TOP 5): <b>${sim.toFixed(2)}%</b></div>
-            <span class="verdetto ${classe}">${label}</span>
-            <div style="margin-top:15px; text-align:left; display:inline-block;">`;
-        top5.forEach(m => { 
-            goldHTML += `<div>✅ ${m.ora} - ${m.nome} ➔ <span style="color:#d4a017"><b>${m.t}</b></span> (${(m.p*100).toFixed(0)}%)</div>`;
-        });
-        goldHTML += `</div></div>`;
-        
-        document.getElementById('outputGold').innerHTML = top5.length < 5 ? "<div class='gold-card'>Inserire almeno 5 match validi.</div>" : goldHTML;
-
-        const body = document.getElementById('listaDettaglio');
-        body.innerHTML = '';
-        totali.forEach(t => {
-            body.innerHTML += `<tr><td>${t.ora}</td><td>${t.nome}</td><td class="auto-label">${t.f}</td><td>${t.t}</td><td style="color:#00ff41; font-weight:bold;">${(t.p*100).toFixed(0)}%</td></tr>`;
+        const tbody = document.getElementById('listaDettaglio');
+        tbody.innerHTML = '';
+        analizzati.forEach(a => {
+            tbody.innerHTML += `<tr><td>${a.ora}</td><td>${a.nome}</td><td class="auto-label">${a.f}</td><td>${a.t}</td><td style="color:#00ff41; font-weight:bold;">${(a.p*100).toFixed(0)}%</td></tr>`;
         });
     }
-
-    setInterval(() => { document.getElementById('clock').innerText = "SYSTEM TIME: " + new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
 </html>

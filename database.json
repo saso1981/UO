@@ -1,51 +1,50 @@
 {
-  "squadre_elite": {
-    "Roma": { "p": 0.93, "t": "U3.5" },
-    "Inter": { "p": 0.92, "t": "U3.5" },
-    "Al Ahly": { "p": 0.94, "t": "U3.5" },
-    "Al Nassr": { "p": 0.93, "t": "U3.5" },
-    "Arsenal": { "p": 0.92, "t": "O1.5" },
-    "Benin": { "p": 0.90, "t": "U2.5" },
-    "Botswana": { "p": 0.89, "t": "U2.5" },
-    "River Plate": { "p": 0.91, "t": "U3.5" },
-    "Melbourne Victory": { "p": 0.87, "t": "O2.5" }
-  },
-  "coefficienti_leghe": {
-    "EUROPA": {
-      "Serie A": { "p": 0.88, "t": "U3.5" },
-      "Serie B": { "p": 0.90, "t": "U2.5" },
-      "LaLiga": { "p": 0.89, "t": "U3.5" },
-      "LaLiga 2": { "p": 0.92, "t": "U2.5" },
-      "Premier League": { "p": 0.81, "t": "U3.5" },
-      "Ligue 1": { "p": 0.87, "t": "U3.5" },
-      "Ligue 2": { "p": 0.91, "t": "U2.5" },
-      "Bundesliga": { "p": 0.82, "t": "O1.5" },
-      "National League": { "p": 0.83, "t": "U3.5" }
+  "last_update": "2025-12-29",
+  "version": "3.1.0",
+  "clusters": [
+    {
+      "name": "ATTACK_GOLD",
+      "p": 0.93,
+      "t": "O1.5",
+      "teams": [
+        "Man City", "Arsenal", "Liverpool", "Bayern", "Barcelona", "Leverkusen", "Dortmund", "Leipzig", "PSV", "Ajax", 
+        "Feyenoord", "Celtic", "Rangers", "Benfica", "Sporting CP", "Porto", "Real Madrid", "Girona", "Aston Villa", "Newcastle", 
+        "Tottenham", "Brighton", "Monaco", "Lille", "Young Boys", "Salzburg", "Al Hilal", "Al Ittihad", "Yokohama", "Urawa Red",
+        "Kawasaki Frontale", "Sydney FC", "Melbourne Victory", "Adelaide Utd", "Central Coast", "Bodo/Glimt", "Molde", "Malmo", "Copenaghen", "Union SG", "AZ Alkmaar", "Braga"
+      ]
     },
-    "AMERICHE": {
-      "Serie A Brazil": { "p": 0.89, "t": "U3.5" },
-      "Serie B Brazil": { "p": 0.93, "t": "U2.5" },
-      "Liga Profesional": { "p": 0.91, "t": "U2.5" },
-      "Liga MX": { "p": 0.84, "t": "O1.5" }
+    {
+      "name": "DEFENSE_GOLD",
+      "p": 0.94,
+      "t": "U3.5",
+      "teams": [
+        "Inter", "Juventus", "Napoli", "AC Milan", "Lazio", "Atalanta", "Atletico Madrid", "Real Sociedad", "Athletic Bilbao", "PSG", 
+        "Nice", "Lens", "Al Nassr", "Al Ahli", "Al Ettifaq", "Al Shabab", "River Plate", "Boca Juniors", "Flamengo", 
+        "Palmeiras", "Sao Paulo", "Internacional", "Gremio", "LDU Quito", "Ind. del Valle", "Club Brugge", "Genk", "Olympiacos", "PAOK", "Fenerbahce", "Galatasaray"
+      ]
     },
-    "ASIA_OCEANIA": {
-      "A-League": { "p": 0.85, "t": "O2.5" },
-      "J1 League": { "p": 0.83, "t": "U3.5" },
-      "Saudi Professional": { "p": 0.85, "t": "U3.5" },
-      "K League": { "p": 0.82, "t": "U3.5" }
+    {
+      "name": "AFRICA_STRICT_UNDER",
+      "p": 0.92,
+      "t": "U2.5",
+      "teams": [
+        "Al Ahly", "Zamalek", "Pyramids", "Wydad", "Raja Casablanca", "Esperance Tunis", "Mamelodi Sundowns", "TP Mazembe", "Simba SC", "Young Africans",
+        "Orlando Pirates", "Kaizer Chiefs", "Benin", "Congo", "Tanzania", "Uganda", "Sudan", "Etiopia", "Sidama Bunna", "Fasil Kenema", "Sheger Ketema", "Maniema", "Dauphins Noirs", "US Panda", "Sanga Balende", "New Jack"
+      ]
     },
-    "AFRICA": {
-      "African Nations": { "p": 0.89, "t": "U2.5" },
-      "Ligue 1 Algeria": { "p": 0.88, "t": "U2.5" }
+    {
+      "name": "LATAM_PRECISION",
+      "p": 0.91,
+      "t": "U3.5",
+      "teams": [
+        "Estudiantes", "Racing Club", "Talleres", "San Lorenzo", "Corinthians", "Atletico MG", "Fortaleza", "Colo Colo", "U. de Chile", "Millonarios",
+        "Nacional Potosi", "Bolivar", "Libertad", "Cerro Porteno", "Penarol", "Nacional Montevideo", "Tocantinopolis", "Araguaina"
+      ]
     }
-  },
-  "configurazione_sistema": {
-    "versione": "2.1.0",
-    "metodo_calcolo": "prodotto_matematico",
-    "soglie_verdetto": {
-      "dajeee": 0.75,
-      "quasiii": 0.55,
-      "occhio": 0.00
-    }
+  ],
+  "league_fallbacks": {
+    "U2.5": ["Serie B", "LaLiga 2", "Ligue 2", "Algeria", "Libia", "Iraq", "Ciad", "Division 1"],
+    "U3.5": ["National", "Premier", "Saudi", "Championship", "Galles", "Cymru", "League Cup", "Federation Cup", "Premiership", "NIFL"],
+    "O1.5": ["Bundesliga", "Eredivisie", "A-League", "NPL", "J-League", "IWL"]
   }
 }

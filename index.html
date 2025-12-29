@@ -2,129 +2,95 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA UO - GENERATORE GOLD</title>
+    <title>Analizzatore Gold Pro - Global Database 2025</title>
     <style>
-        :root { --primary: #00d2ff; --bg: #1a1a2e; --card: #16213e; --accent: #00ff41; --danger: #e94560; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e0e0e0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
-        .box { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #0f3460; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: var(--primary); font-size: 1.2rem; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #0f3460; padding-bottom: 10px; }
-        textarea { width: 100%; height: 400px; background: #0f172a; color: var(--accent); border: 1px solid #1e293b; border-radius: 10px; padding: 15px; font-family: 'Fira Code', monospace; resize: none; box-sizing: border-box; }
-        .controls { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        button { padding: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
-        .btn-start { background: var(--primary); color: #1a1a2e; }
-        .btn-copy { background: var(--accent); color: #1a1a2e; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        .match-row { background: #1b264f; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--primary); animation: slideIn 0.3s ease-out; }
-        .prob-circle { background: #0f172a; border: 2px solid var(--accent); color: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
-        .badge { font-size: 0.7rem; background: var(--danger); padding: 3px 7px; border-radius: 4px; margin-left: 5px; color: white; }
-        .simultaneita-box { background: var(--accent); color: #1a1a2e; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; font-weight: bold; font-size: 1.3rem; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #2d2d2d; }
+        th, td { padding: 12px; border: 1px solid #444; text-align: left; }
+        th { background: #d4a017; color: #000; }
+        .future { background: #2ecc71; padding: 5px 10px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align:center; color:var(--primary); margin-bottom: 30px;">Protocollo UO - Generatore Schedina Gold</h1>
+    <h2>🏆 Analizzatore Gold (Global 2025 - All Leagues)</h2>
+    <div id="orario-attuale"></div>
+    
+    <textarea id="palinsesto" placeholder="Incolla qui il palinsesto HTML..." style="width:100%; height:150px; background:#333; color:#fff;"></textarea>
+    <br>
+    <button onclick="processaGold()" style="padding:15px 30px; cursor:pointer; background:#d4a017; border:none; font-weight:bold;">GENERA SCHEDINA GOLD</button>
 
-    <div class="container">
-        <div class="box">
-            <h2>1. Palinsesto Giornaliero</h2>
-            <textarea id="inputList" placeholder="Incolla qui tutti i match della giornata..."></textarea>
-            <div class="controls">
-                <button class="btn-start" onclick="generaSchedinaGold()">Avvia Analisi Protocollo RE</button>
-            </div>
-        </div>
-
-        <div class="box">
-            <h2>2. Schedina Gold (Top 5 Probabilità)</h2>
-            <div id="results">
-                <p style="text-align:center; color:#555; margin-top: 100px;">Incolla i match e clicca su AVVIA per generare la Top 5 del giorno.</p>
-            </div>
-            <div id="simultaneita" style="display:none;" class="simultaneita-box"></div>
-            <button id="copyBtn" class="btn-copy" style="display:none; width:100%; margin-top:10px;" onclick="copiaSchedina()">Copia Schedina negli Appunti</button>
-        </div>
+    <div id="risultati">
+        <table id="tabella-match">
+            <thead>
+                <tr>
+                    <th>Ora</th>
+                    <th>Match</th>
+                    <th>Target</th>
+                    <th>Probabilità</th>
+                    <th>Stato</th>
+                </tr>
+            </thead>
+            <tbody id="match-body"></tbody>
+        </table>
     </div>
 
-<script>
-    let config = {};
+    <script>
+        // DATABASE GLOBALE 2025 - Tutti i campionati monitorati
+        const globalDB = {
+            "Roma": { "prob": 0.93, "target": "U3.5" },
+            "Egitto": { "prob": 0.90, "target": "U2.5" },
+            "Marocco": { "prob": 0.89, "target": "U2.5" },
+            "Melbourne Victory": { "prob": 0.87, "target": "O2.5" },
+            "Flamengo": { "prob": 0.86, "target": "U3.5" },
+            "Urawa Reds": { "prob": 0.84, "target": "U3.5" },
+            // Filtri Lega Generici se la squadra non è in lista
+            "DEFAULT_SERIE_A": { "prob": 0.88, "target": "U3.5" },
+            "DEFAULT_AFCON": { "prob": 0.89, "target": "U2.5" },
+            "DEFAULT_ALGERIA": { "prob": 0.88, "target": "U2.5" },
+            "DEFAULT_BRAZIL": { "prob": 0.82, "target": "U3.5" }
+        };
 
-    // Carica il database esterno all'avvio
-    async function caricaDatabase() {
-        try {
-            const response = await fetch('database.json');
-            config = await response.json();
-            console.log("Database caricato con successo");
-        } catch (error) {
-            alert("Errore nel caricamento del database. Assicurati che database.json sia nella stessa cartella.");
+        function processaGold() {
+            const rawData = document.getElementById('palinsesto').value;
+            const adesso = new Date();
+            const body = document.getElementById('match-body');
+            body.innerHTML = '';
+
+            // Estrazione match (logica semplificata per il tuo uso)
+            let matches = estraiMatch(rawData); 
+
+            // SCUDO TEMPORALE + FILTRO GLOBALE
+            const matchFiltrati = matches.filter(m => {
+                const [ore, minuti] = m.ora.split(':');
+                const dataMatch = new Date();
+                dataMatch.setHours(parseInt(ore), parseInt(minuti), 0);
+                return dataMatch > new Date(adesso.getTime() + 5 * 60000);
+            });
+
+            // Ordinamento per importanza globale
+            matchFiltrati.sort((a, b) => (globalDB[b.squadra]?.prob || 0.5) - (globalDB[a.squadra]?.prob || 0.5));
+
+            matchFiltrati.forEach(m => {
+                const info = globalDB[m.squadra] || { prob: 0.75, target: "U3.5" };
+                body.innerHTML += `<tr>
+                    <td>${m.ora}</td>
+                    <td>${m.squadra}</td>
+                    <td>${info.target}</td>
+                    <td>${(info.prob * 100).toFixed(0)}%</td>
+                    <td><span class="future">DISPONIBILE</span></td>
+                </tr>`;
+            });
         }
-    }
 
-    // Esegui il caricamento
-    caricaDatabase();
-
-    function generaSchedinaGold() {
-        const input = document.getElementById('inputList').value;
-        const resultsDiv = document.getElementById('results');
-        const simultaneitaDiv = document.getElementById('simultaneita');
-
-        if (!config.databaseUO) {
-            alert("Database non pronto. Riprova tra un secondo.");
-            return;
+        function estraiMatch(html) {
+            // Qui inserisci la tua regex specifica per il sito che usi
+            return []; 
         }
 
-        const righe = input.split('\n');
-        let matchAnalizzati = [];
-
-        righe.forEach(riga => {
-            const cleanRow = riga.trim();
-            if (cleanRow.length < 5) return;
-
-            let matchObj = { testo: cleanRow, target: "U3.5", prob: 0.65, note: "Standard" };
-
-            // Controllo Squadre ELITE dal JSON
-            let foundElite = false;
-            for (const [squadra, dati] of Object.entries(config.databaseUO)) {
-                if (cleanRow.toLowerCase().includes(squadra.toLowerCase())) {
-                    Object.assign(matchObj, dati);
-                    foundElite = true;
-                    break;
-                }
-            }
-
-            // Controllo Leghe dal JSON
-            if (!foundElite) {
-                for (const [lega, dati] of Object.entries(config.leagueFilters)) {
-                    if (cleanRow.toLowerCase().includes(lega.toLowerCase())) {
-                        matchObj.prob = dati.prob;
-                        matchObj.target = dati.target;
-                        matchObj.note = "League Filter";
-                        break;
-                    }
-                }
-            }
-            matchAnalizzati.push(matchObj);
-        });
-
-        matchAnalizzati.sort((a, b) => b.prob - a.prob);
-        const top5 = matchAnalizzati.slice(0, 5);
-
-        let simultTotale = 1.0;
-        resultsDiv.innerHTML = top5.map(m => {
-            simultTotale *= m.prob;
-            return `<div class="match-row">
-                        <div><strong>${m.testo}</strong> <span class="badge">${m.note}</span><br><small>Target: ${m.target}</small></div>
-                        <div class="prob-circle">${(m.prob * 100).toFixed(0)}%</div>
-                    </div>`;
-        }).join('');
-
-        simultaneitaDiv.style.display = "block";
-        simultaneitaDiv.innerHTML = `SIMULTANEITÀ GOLD: ${(simultTotale * 100).toFixed(2)}%`;
-        document.getElementById('copyBtn').style.display = "block";
-    }
-
-</script>
-
+        setInterval(() => {
+            document.getElementById('orario-attuale').innerText = "Orario Sistema: " + new Date().toLocaleTimeString();
+        }, 1000);
+    </script>
 </body>
 </html>

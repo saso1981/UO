@@ -1,22 +1,51 @@
 {
-  "databaseUO": {
-    "Roma": { "prob": 0.93, "note": "Elite 2025: 88% U3.5. Asset X/1 consolidato", "target": "U3.5" },
-    "Inter": { "prob": 0.92, "note": "Difesa Blindata 2025: Media 0.7 gol subiti", "target": "U3.5" },
-    "Juventus": { "prob": 0.91, "note": "Trend Esterno 2025: Massima stabilità U3.5", "target": "U3.5" },
-    "Egitto": { "prob": 0.90, "note": "Top Africa 2025: Record Clean Sheets (14)", "target": "U2.5" },
-    "Marocco": { "prob": 0.89, "note": "Asset X/2: Controllo totale 2025", "target": "U2.5" },
-    "Algeria": { "prob": 0.89, "note": "Strict Algeria: Trend Under 2.5 annuale", "target": "U2.5" },
-    "Melbourne Victory": { "prob": 0.87, "note": "Motore Over 2025: Garanzia spettacolo", "target": "O2.5" },
-    "Al-Taawon": { "prob": 0.86, "note": "Evoluzione Saudi 2025: Tenuta difensiva", "target": "U3.5" },
-    "Atalanta": { "prob": 0.89, "note": "Asset Consolidato: Affidabilità U3.5", "target": "U3.5" },
-    "Napoli": { "prob": 0.88, "note": "Rendimento 2025: Equilibrio tattico U3.5", "target": "U3.5" }
+  "squadre_elite": {
+    "Roma": { "p": 0.93, "t": "U3.5" },
+    "Inter": { "p": 0.92, "t": "U3.5" },
+    "Al Ahly": { "p": 0.94, "t": "U3.5" },
+    "Al Nassr": { "p": 0.93, "t": "U3.5" },
+    "Arsenal": { "p": 0.92, "t": "O1.5" },
+    "Benin": { "p": 0.90, "t": "U2.5" },
+    "Botswana": { "p": 0.89, "t": "U2.5" },
+    "River Plate": { "p": 0.91, "t": "U3.5" },
+    "Melbourne Victory": { "p": 0.87, "t": "O2.5" }
   },
-  "leagueFilters": {
-    "serie a": { "target": "U3.5", "prob": 0.88, "note": "Lega più solida d'Europa 2025" },
-    "african nations cup": { "target": "U2.5", "prob": 0.89, "note": "Filtro AFCON: Zero varianza Under" },
-    "a-league": { "target": "O2.5", "prob": 0.83, "note": "Trend Over Oceanico 2025" },
-    "saudi professional league": { "target": "U3.5", "prob": 0.84, "note": "Crescita tattica annuale" },
-    "ligue 1 (algeria)": { "target": "U2.5", "prob": 0.88, "note": "Fortino Under 2.5 - Archivio 2025" },
-    "premier league": { "target": "O1.5", "prob": 0.78, "note": "Trend Gol 2025" }
+  "coefficienti_leghe": {
+    "EUROPA": {
+      "Serie A": { "p": 0.88, "t": "U3.5" },
+      "Serie B": { "p": 0.90, "t": "U2.5" },
+      "LaLiga": { "p": 0.89, "t": "U3.5" },
+      "LaLiga 2": { "p": 0.92, "t": "U2.5" },
+      "Premier League": { "p": 0.81, "t": "U3.5" },
+      "Ligue 1": { "p": 0.87, "t": "U3.5" },
+      "Ligue 2": { "p": 0.91, "t": "U2.5" },
+      "Bundesliga": { "p": 0.82, "t": "O1.5" },
+      "National League": { "p": 0.83, "t": "U3.5" }
+    },
+    "AMERICHE": {
+      "Serie A Brazil": { "p": 0.89, "t": "U3.5" },
+      "Serie B Brazil": { "p": 0.93, "t": "U2.5" },
+      "Liga Profesional": { "p": 0.91, "t": "U2.5" },
+      "Liga MX": { "p": 0.84, "t": "O1.5" }
+    },
+    "ASIA_OCEANIA": {
+      "A-League": { "p": 0.85, "t": "O2.5" },
+      "J1 League": { "p": 0.83, "t": "U3.5" },
+      "Saudi Professional": { "p": 0.85, "t": "U3.5" },
+      "K League": { "p": 0.82, "t": "U3.5" }
+    },
+    "AFRICA": {
+      "African Nations": { "p": 0.89, "t": "U2.5" },
+      "Ligue 1 Algeria": { "p": 0.88, "t": "U2.5" }
+    }
+  },
+  "configurazione_sistema": {
+    "versione": "2.1.0",
+    "metodo_calcolo": "prodotto_matematico",
+    "soglie_verdetto": {
+      "dajeee": 0.75,
+      "quasiii": 0.55,
+      "occhio": 0.00
+    }
   }
 }

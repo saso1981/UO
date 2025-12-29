@@ -1,24 +1,22 @@
 {
   "databaseUO": {
-    "Roma": { "prob": 0.91, "note": "X/1 Asset (72% Pareggio HT) - Trend 2025 consolidato", "target": "U3.5" },
-    "Genoa": { "prob": 0.88, "note": "Asset Difensivo - Bassi xG concessi nel 2025", "target": "U3.5" },
-    "Egitto": { "prob": 0.87, "note": "Elite AFCON - 90% U2.5 negli ultimi 3 mesi", "target": "U2.5" },
-    "Marocco": { "prob": 0.85, "note": "X/2 Asset (Vittoria 2T) - Gestione ritmo 2025", "target": "U2.5" },
-    "Melbourne Victory": { "prob": 0.83, "note": "Motore Over - Alta produzione offensiva 2025", "target": "O2.5" },
-    "Inter Moengotapoe": { "prob": 0.82, "note": "Strict Filter: Contrazione gol negli scontri diretti", "target": "U3.5" },
-    "Al-Taawon": { "prob": 0.84, "note": "Saudi Pro: X/1 Asset (65% Pareggio HT)", "target": "U3.5" },
-    "Atalanta": { "prob": 0.88, "note": "Asset Consolidato - Sicurezza Under 3.5", "target": "U3.5" },
-    "Algeria": { "prob": 0.87, "note": "Trend 2025: Clean Sheet specialist", "target": "U2.5" },
-    "Wellington Phoenix": { "prob": 0.81, "note": "Asset Motore Over - A-League Trend", "target": "O2.5" },
-    "Lazio": { "prob": 0.89, "note": "X/1 Asset - Tenuta difensiva 1T", "target": "U3.5" }
+    "Roma": { "prob": 0.93, "note": "Elite 2025: 88% U3.5. Asset X/1 consolidato", "target": "U3.5" },
+    "Inter": { "prob": 0.92, "note": "Difesa Blindata 2025: Media 0.7 gol subiti", "target": "U3.5" },
+    "Juventus": { "prob": 0.91, "note": "Trend Esterno 2025: Massima stabilità U3.5", "target": "U3.5" },
+    "Egitto": { "prob": 0.90, "note": "Top Africa 2025: Record Clean Sheets (14)", "target": "U2.5" },
+    "Marocco": { "prob": 0.89, "note": "Asset X/2: Controllo totale 2025", "target": "U2.5" },
+    "Algeria": { "prob": 0.89, "note": "Strict Algeria: Trend Under 2.5 annuale", "target": "U2.5" },
+    "Melbourne Victory": { "prob": 0.87, "note": "Motore Over 2025: Garanzia spettacolo", "target": "O2.5" },
+    "Al-Taawon": { "prob": 0.86, "note": "Evoluzione Saudi 2025: Tenuta difensiva", "target": "U3.5" },
+    "Atalanta": { "prob": 0.89, "note": "Asset Consolidato: Affidabilità U3.5", "target": "U3.5" },
+    "Napoli": { "prob": 0.88, "note": "Rendimento 2025: Equilibrio tattico U3.5", "target": "U3.5" }
   },
   "leagueFilters": {
-    "serie a": { "target": "U3.5", "prob": 0.84, "note": "Trend 2025: Tatticismo elevato" },
-    "african nations cup": { "target": "U2.5", "prob": 0.82, "note": "Strict AFCON: Media 1.4 gol/match" },
-    "a-league": { "target": "O2.5", "prob": 0.78, "note": "Motore Over Oceanico" },
-    "championship": { "target": "U3.5", "prob": 0.75, "note": "Equilibrio fisico 2025" },
-    "saudi professional league": { "target": "U3.5", "prob": 0.81, "note": "Crescita organizzazione difensiva" },
-    "national league": { "target": "U3.5", "prob": 0.68, "note": "Varianza medio-alta" },
-    "ligue 1": { "target": "U2.5", "prob": 0.74, "note": "Trend Under mercati africani/francesi" }
+    "serie a": { "target": "U3.5", "prob": 0.88, "note": "Lega più solida d'Europa 2025" },
+    "african nations cup": { "target": "U2.5", "prob": 0.89, "note": "Filtro AFCON: Zero varianza Under" },
+    "a-league": { "target": "O2.5", "prob": 0.83, "note": "Trend Over Oceanico 2025" },
+    "saudi professional league": { "target": "U3.5", "prob": 0.84, "note": "Crescita tattica annuale" },
+    "ligue 1 (algeria)": { "target": "U2.5", "prob": 0.88, "note": "Fortino Under 2.5 - Archivio 2025" },
+    "premier league": { "target": "O1.5", "prob": 0.78, "note": "Trend Gol 2025" }
   }
 }

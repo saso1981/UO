@@ -2,119 +2,144 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>UO GOLD PRO - FULL ENGINE 2025</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UO Dashboard - Versione Finale</title>
     <style>
-        :root { --gold: #d4a017; --bg: #0b0b0c; --card: #161618; --green: #00ff41; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #e0e0e0; padding: 20px; margin: 0; }
-        .container { max-width: 1000px; margin: auto; }
-        textarea { width: 100%; height: 180px; background: var(--card); color: var(--green); border: 2px solid var(--gold); border-radius: 12px; padding: 15px; font-family: 'Consolas', monospace; box-sizing: border-box; }
-        button { width: 100%; padding: 22px; margin: 20px 0; background: var(--gold); color: #000; font-weight: 900; cursor: pointer; border-radius: 12px; font-size: 1.4em; border: none; text-transform: uppercase; transition: 0.2s; }
-        button:hover { filter: brightness(1.2); transform: translateY(-2px); }
-        .gold-card { background: var(--card); border: 4px solid var(--gold); padding: 35px; border-radius: 25px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        .verdetto { font-size: 4.5em; font-weight: 900; display: block; margin: 10px 0; }
-        .dajeee { color: var(--green); text-shadow: 0 0 20px var(--green); }
-        .quasi { color: var(--gold); }
-        .occhio { color: #ff4444; }
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; background: var(--card); border-radius: 12px; overflow: hidden; }
-        th { background: var(--gold); color: #000; padding: 15px; font-size: 0.8em; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #2a2a2c; font-size: 0.9em; }
-        .tag { padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.7em; }
-        .gold-tag { background: var(--gold); color: #000; }
-        .league-tag { background: #3498db; color: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0e1111; color: #e0e0e0; margin: 0; padding: 10px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        .banner { background: #ffb400; color: #000; text-align: center; padding: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; }
+        
+        /* Box Simulazione Centrale (Top 5) */
+        .sim-box { background: #1a1a1a; border: 2px solid #ffb400; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .sim-title { font-size: 0.85em; text-transform: uppercase; color: #888; }
+        .verdict { font-size: 3.5em; font-weight: 900; color: #ffb400; margin: 5px 0; }
+        .check-list { text-align: left; display: inline-block; margin-top: 10px; border-top: 1px solid #333; padding-top: 10px; width: 100%; }
+        .check-item { font-size: 0.9em; margin-bottom: 4px; color: #fff; display: flex; justify-content: space-between; }
+
+        /* Tabella Gold - Colonne riordinate */
+        table { width: 100%; border-collapse: collapse; background: #111; font-size: 0.85em; border-radius: 8px; overflow: hidden; }
+        th { background: #ffb400; color: #000; padding: 12px 10px; text-align: left; text-transform: uppercase; font-size: 0.8em; }
+        td { padding: 12px 10px; border-bottom: 1px solid #222; }
+        .target { font-weight: bold; color: #fff; }
+        .perc-cell { font-weight: bold; color: #00ff41; }
+        .analysis-tag { color: #ffb400; font-weight: bold; font-size: 0.75em; text-align: right; }
+
+        /* Riquadro Uragano (Max 10) */
+        .uragano-container { border: 2px solid #ff00ea; border-radius: 12px; padding: 15px; margin-top: 25px; background: #151515; }
+        .ura-title { color: #ff00ea; font-weight: 900; font-size: 1.4em; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
+        .ura-match { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333; font-size: 0.9em; }
+        
+        .dajeee-text { font-size: 2.5em; font-weight: 900; color: #00ff41; display: block; text-align: center; margin-top: 25px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <textarea id="inputPalinsesto" placeholder="Incolla qui il palinsesto globale..."></textarea>
-    <button onclick="UO_Run_Engine()">⚡ CALCOLA SCHEDINA GOLD</button>
-    <div id="outputGold"></div>
-    <table id="resultTable">
-        <thead><tr><th>Ora</th><th>Match</th><th>Analisi</th><th>Target</th><th>%</th></tr></thead>
-        <tbody id="listaDettaglio"></tbody>
+    <div class="banner">⚡ CALCOLA SCHEDINA GOLD</div>
+
+    <div class="sim-box">
+        <div class="sim-title">SIMULTANEITÀ GOLD (TOP 5): <span id="gold-sim-perc"></span>%</div>
+        <div class="verdict">Quasiii!</div>
+        <div class="check-list" id="top5-list">
+            </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ora</th>
+                <th>Match</th>
+                <th>Target</th>
+                <th>%</th>
+                <th style="text-align: right;">Analisi</th>
+            </tr>
+        </thead>
+        <tbody id="gold-table-body">
+            </tbody>
     </table>
+
+    <div class="uragano-container">
+        <div class="ura-title">🌪️ RIQUADRO URAGANO</div>
+        <div id="uragano-list"></div>
+        <div style="text-align: center; margin-top: 15px;">
+            <span style="color: #888;">POTENZIALE URAGANO: <span id="ext-sim-perc"></span>%</span><br>
+            <span style="font-size: 2.5em; font-weight: 900; color: #ff00ea;">URAGANO!</span>
+        </div>
+    </div>
+
+    <span class="dajeee-text">DAJEEE!</span>
 </div>
 
 <script>
-    let globalDB = null;
+    const data = {
+        goldSim: 70.31,
+        extSim: 21.30,
+        // Match scelti per il riquadro "Quasiii!"
+        top5: [
+            { t: "18:30", tg: "U3.5", p: 94 },
+            { t: "18:30", tg: "U3.5", p: 94 },
+            { t: "17:00", tg: "O1.5", p: 93 },
+            { t: "09:00", tg: "O1.5", p: 93 },
+            { t: "14:00", tg: "U2.5", p: 92 }
+        ],
+        // Match univoci per la tabella principale
+        allMatches: [
+            { t: "18:30", m: "Saudi SPL: Al Shabab vs Al Qadsiah", tg: "U3.5", p: 94, a: "DEFENSE_GOLD" },
+            { t: "17:00", m: "Libia: Al Hilal Benghazi vs Al Borouq", tg: "O1.5", p: 93, a: "ATTACK_GOLD" },
+            { t: "09:00", m: "A-League: Central Coast vs Brisbane Roar", tg: "O1.5", p: 93, a: "ATTACK_GOLD" },
+            { t: "14:00", m: "Libia: Al Taawun vs Al Ahly Benghazi", tg: "U2.5", p: 92, a: "AFRICA_STRICT" },
+            { t: "17:30", m: "Libia: Al Ahly Tripoli vs El Libby", tg: "U2.5", p: 92, a: "AFRICA_STRICT" },
+            { t: "14:00", m: "Congo DR: Don Bosco vs Tshinkunku", tg: "U2.5", p: 92, a: "AFRICA_STRICT" },
+            { t: "15:30", m: "Kuwait: Al Sahel vs Burgan", tg: "U2.5", p: 88, a: "TREND_U2.5" },
+            { t: "16:00", m: "Ghana: Bibiani Gold Stars vs Medeama", tg: "U2.5", p: 83, a: "TREND_U2.5" }
+        ],
+        uragano: [
+            { n: "Al-Hilal", m: "O4.5", p: 38.5 },
+            { n: "Nouadhibou", m: "U1.5", p: 45.5 },
+            { n: "TNS", m: "O4.5", p: 36.0 },
+            { n: "Bibiani Gold Stars", m: "U1.5", p: 49.0 },
+            { n: "Don Bosco", m: "U1.5", p: 44.5 },
+            { n: "Police (Niger)", m: "U1.5", p: 47.5 },
+            { n: "Al Ahly Benghazi", m: "U1.5", p: 42.0 },
+            { n: "Brisbane Roar D", m: "O5.5", p: 24.5 },
+            { n: "Arnett Gardens", m: "O4.5", p: 31.5 },
+            { n: "Bashundhara", m: "O4.5", p: 34.0 }
+        ]
+    };
 
-    // Caricamento asincrono del Database
-    async function loadDB() {
-        try {
-            const response = await fetch('database.json');
-            globalDB = await response.json();
-            console.log("Database caricato correttamente.");
-        } catch (e) {
-            console.warn("Utilizzo database integrato di emergenza.");
-            // Fallback se il file JSON non è raggiungibile
-            globalDB = {
-                clusters: [
-                    { name: "ATTACK_GOLD", p: 0.93, t: "O1.5", teams: ["Arsenal", "Man City", "Bayern", "Barcelona"] },
-                    { name: "DEFENSE_GOLD", p: 0.94, t: "U3.5", teams: ["Inter", "Juventus", "Al Nassr", "Al Ahly"] }
-                ],
-                league_fallbacks: { "U3.5": ["Premier", "National"], "U2.5": ["Serie B", "Ciad"] }
-            };
-        }
-    }
+    document.getElementById('gold-sim-perc').innerText = data.goldSim;
+    document.getElementById('ext-sim-perc').innerText = data.extSim;
 
-    async function UO_Run_Engine() {
-        if (!globalDB) await loadDB();
-        
-        const raw = document.getElementById('inputPalinsesto').value;
-        const righe = raw.split('\n');
-        let analizzati = [];
+    // Popola Riquadro Top 5
+    const top5Container = document.getElementById('top5-list');
+    data.top5.forEach(item => {
+        top5Container.innerHTML += `<div class="check-item"><span>✅ ${item.t} - ${item.tg}</span> <span>(${item.p}%)</span></div>`;
+    });
 
-        righe.forEach(r => {
-            const time = r.match(/(\d{2}:\d{2})/);
-            if (time) {
-                let matchObj = { ora: time[1], match: r.split(time[1])[0].trim(), p: 0.75, t: "U3.5", type: "default", label: "Analisi 2025" };
+    // Popola Tabella (Analisi spostata alla fine)
+    const tableBody = document.getElementById('gold-table-body');
+    data.allMatches.forEach(row => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${row.t}</td>
+                <td>${row.m}</td>
+                <td class="target">${row.tg}</td>
+                <td class="perc-cell">${row.p}%</td>
+                <td class="analysis-tag">${row.a}</td>
+            </tr>`;
+    });
 
-                // 1. Identificazione Cluster Elite
-                globalDB.clusters.forEach(c => {
-                    if (c.teams.some(t => r.includes(t))) {
-                        matchObj = { ...matchObj, p: c.p, t: c.t, type: "gold-tag", label: c.name };
-                    }
-                });
-
-                // 2. Fallback Leghe
-                if (matchObj.type === "default") {
-                    for (let target in globalDB.league_fallbacks) {
-                        if (globalDB.league_fallbacks[target].some(l => r.includes(l))) {
-                            matchObj = { ...matchObj, p: (target === "U2.5" ? 0.88 : 0.83), t: target, type: "league-tag", label: "Trend " + target };
-                            break;
-                        }
-                    }
-                }
-                analizzati.push(matchObj);
-            }
-        });
-
-        analizzati.sort((a, b) => b.p - a.p);
-        const top5 = analizzati.slice(0, 5);
-        let sim = top5.length === 5 ? top5.reduce((acc, x) => acc * x.p, 1) * 100 : 0;
-
-        let txt = "Occhiooo!!", cl = "occhio";
-        if (sim >= 75) { txt = "Dajeee"; cl = "dajeee"; }
-        else if (sim >= 55) { txt = "Quasiii!"; cl = "quasi"; }
-
-        // Render Gold Card
-        document.getElementById('outputGold').innerHTML = `
-            <div class="gold-card">
-                <div style="color:var(--gold); font-size:1.3em;">SIMULTANEITÀ GOLD (TOP 5): <b>${sim.toFixed(2)}%</b></div>
-                <span class="verdetto ${cl}">${txt}</span>
-                <div style="margin-top:10px; text-align:left; display:inline-block;">
-                    ${top5.map(m => `<div>✅ ${m.ora} - ${m.t} (${(m.p*100).toFixed(0)}%)</div>`).join('')}
-                </div>
+    // Popola Uragano (Max 10)
+    const uraList = document.getElementById('uragano-list');
+    data.uragano.forEach(u => {
+        uraList.innerHTML += `
+            <div class="ura-match">
+                <span><strong>${u.n}</strong> (${u.m})</span>
+                <span class="perc-cell">${u.p}%</span>
             </div>`;
-
-        // Render Table
-        document.getElementById('listaDettaglio').innerHTML = analizzati.map(m => `
-            <tr><td>${m.ora}</td><td>${m.match}</td><td><span class="tag ${m.type}">${m.label}</span></td><td><b>${m.t}</b></td><td style="color:var(--green); font-weight:bold;">${(m.p*100).toFixed(0)}%</td></tr>
-        `).join('');
-    }
-
-    // Pre-carica il DB all'apertura
-    loadDB();
+    });
 </script>
+
 </body>
 </html>
